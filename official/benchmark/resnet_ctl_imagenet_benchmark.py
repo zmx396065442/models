@@ -86,10 +86,9 @@ class CtlBenchmark(PerfZeroBenchmark):
         len(stats['step_timestamp_log']) > warmup + 1):
       # first entry in the time_log is start of step 0. The rest of the
       # entries are the end of each step recorded
-      time_log = stats['step_timestamp_log'][warmup:]
-      time_pairs = list(zip(time_log, time_log[1:]))
-      steps_elapsed = sum(b.batch_index - a.batch_index for a, b in time_pairs)
-      time_elapsed = sum(b.timestamp - a.timestamp for a, b in time_pairs)
+      time_log = stats['step_timestamp_log']
+      steps_elapsed = time_log[-1].batch_index - time_log[warmup].batch_index
+      time_elapsed = time_log[-1].timestamp - time_log[warmup].timestamp
       examples_per_sec = self.batch_size * (steps_elapsed / time_elapsed)
       metrics.append({'name': 'exp_per_second', 'value': examples_per_sec})
 
